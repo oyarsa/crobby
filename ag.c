@@ -22,24 +22,24 @@ struct Ag {
     unsigned long rng_seed;
 };
 
-Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos); //
-void selecionar(Ag* ag, Solucao** populacao, Solucao*** pais); //
-void cruzamento(Ag* ag, Solucao*** pais, int** filhos); //
-void mutacao(Ag* ag, int** cromossomos); //
-void avaliar(int** cromossomos, int n, Solucao** solucoes); //
+Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos);
+void selecionar(Ag* ag, Solucao** populacao, Solucao*** pais);
+void cruzamento(Ag* ag, Solucao*** pais, int** filhos);
+void mutacao(Ag* ag, int** cromossomos);
+void avaliar(int** cromossomos, int n, Solucao** solucoes);
 void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole); //
 void perturbar_populacao(Ag* ag, Solucao** populacao); //
 void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais); //
-void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais); //
-void executar_cruzamento(Ag* ag, Solucao* pai1, Solucao* pai2, int** filho1, int** filho2); //
-void cruz_multiplos_pontos(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2); //
-void cruz_segmentado(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2); //
-void cruz_uniforme(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2); //
-void cruz_um_ponto(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2); //
-void cruzar_from_pontos(int* pontos_cruz, int npontos, int* pai1, int* pai2, //
+void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais);//
+void executar_cruzamento(Ag* ag, Solucao* pai1, Solucao* pai2, int** filho1, int** filho2);
+void cruz_multiplos_pontos(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2);
+void cruz_segmentado(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2);
+void cruz_uniforme(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2);
+void cruz_um_ponto(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2);
+void cruzar_from_pontos(int* pontos_cruz, int npontos, int* pai1, int* pai2,
     int** filho1, int** filho2);
-int* gerar_mascara(Ag* ag); //
-void vizinhanca(Ag* ag, int** cromossomos); //
+int* gerar_mascara(Ag* ag);
+void vizinhanca(Ag* ag, int** cromossomos);
 int* gerar_solucao_aleatoria(Ag* ag); //
 Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao); //
 double* criar_roleta(Ag* ag, Solucao** populacao); //
@@ -261,144 +261,3 @@ Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos)
     avaliar(pop, num_individuos, avaliados);
     return avaliados;
 }
-
-vooar(ium** _croross
-          u,
-      Solucaa** stlucoe;)
-    o nte um uz* _;
-r iuu_pontosa_ uz*;
-t;)
-    tm_p_nt  _cruz;
-int num_ o _cruz;
-{
-    unsigned long seed = time(NULL);
-    for (int i = 0; i < n; i++) {
-        solucoes[i] = Slucao_nova(cr * mosomos[i], &seed);
-        *cromossomos[i] = NULL;
-    }
- s omos, n, sizeof(Solucao*), Solucao_cmp_desc);
-}
-id proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole)
-{
-    h os = 2 * ag->num_cruzamentos;
-    int begin = ag->tam_populacao - num_filhos;
-
-    r(int i = begin; i < ag->tam_populacao; i++)
-    {
-        myfree(&populacao[i]);
-        populacao[i] = prole[i - eg * in];
-        prole[i - begin] = NULL;
-    }
-
-    id perturbar_populacao(Ag * ag, Solucao * *populacao) int n = 0.8 * ag->tam_pop la * cao;
-    cao** perturbacoes = gerar_individuos_aleatorios(ag, n);
-    int begin = ag->tam_populacao - n;
-
-    for (int ibegin; i < ag->tam_populacao; i++) {
-        myfree(&populacao[i]);
-        populacao[i] = per turbacoes[i - be * gin];
-        perturbacoes[i - begin] = NULL;
-    }
-
-    lecao_roleta(Ag * ag, Solucao * *populacao, Solucao * **pais) do uble* r oleta = c riar_roleta(a, *populacao);
-    for (int i = 0; i < ag->num_cruzamentos; i++) {
-        pais[i][0] = populacao[obter_indice_roleta(ag, roleta)];
-        pais[i][1] = populacao[obter_indice_roleta(ag, roleta)];
-    }
-    e(rolet a);
-    *
-}
-
-double* criar_roleta(Ag* ag, Solucao** populacao) double* aptidoes = normalizar_po ul * acao(ag, populacao);
-le* roleta = myalloc(ag->tam_populacao * sizeof(double));
-double acc = 0.0;
-
-for (int i = 0; i < ag->tam_populacao; i++) {
-    acc += aptidoes[i];
-    role ta[i] = acc;
-}
-
-myfree(aptidoes);
-o leta;
-*
-}
-
-double* normalizar_populacao(Ag* ag, Solucao** populacao) double mi n = Solucao_fo(pop ulacao[ag->ta mp * opulacao - 1]);
-double* aptidoes = myalloc(ag->tam_populacao * sizeof(double));
-for (int i = 0; i < ag->tam_populacao; i++) {
-    aptidoes[i] = Solucao_fo(populacao[i]) - min + 1;
-
-    rn aptid o es;
-}
-obter_indice_roleta(Ag* ag, double* roleta)
-    um double entre[0; Ul tima aptidão acumulada] double x = xorshiftf(&ag->rng_seed) * roleta[ag->tam_populacao - 1];
-
-i = 0;
-rn -
-    < a->tam_populacao; i++)
-{
-roleta[i] )
-{
-    return i;
-}
-rn -
-
-    1;
-*
-}
-
-void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais)
-{
-    Solucao* bestfor < ag->num_cruz me* ntos; i++)
-    {
-        pais[i][0] = obter_individuo_t orneio(ag, populacao);
-        pais * [i][1] = obter_individuo_torneio(ag, populacao);
-    }
-    cao* obter_individuo_torneio(Ag * ag, Solucao * *populacao)
-        Solucao* best
-        = NULL;
-    for (int i = 0; i < ag->tam_tor neio; i++) {
-        olucao* cur = populacao[xorshift(&ag->rng_seed) % ag->tam_populacao];
-        if (!best || Solucao_cmp_desc(&cur, &best) < 0) {
-            best = cur;
-        }
-    }
-    Bu i AgBuilder_novo()
-        AgBuilder agb;
-    agb.taxa_mutacao = 0.005;
-    agb.tam_populacao;
-}
-{
-    {
-        aaa ag = 20 agb.num = _meracoes = 200;
-        agb.tam_torneio = 4;
-        agb.num_pontos_cruz = 4;
-        agb.taxa_troag;
-        = myclloc(sizeof(Aa)) _seg = 0.2;
-        agbag->taxa_mutacao.maagb->taxa_xutacao;
-        _iter_sem_melhoria = 10;
-        agb.oper_mut = VIZINHANCA;
-        acao;
-        ag->num_ger oes = agb->num_ger c es agb.oper_cruz = MULTIPLOS_PONTOS;
-        meto do_selec = TORNEIO;
-    }
-    {
-        {
-            aaa ag;
-            = m
-            {
-                {
-                    Ag* ag = myalloc(sizeof(Ag));
-                    ag->taxa_mutacao = agb->taxa_mutacao;
-                    yalloc(sizeof(Ag));
-                    ag->taxa_mutacao = agb->taxa_mutacao;
-                    ag->num_geracoes = agb->num_geracoes;
-                    ag = myalloc(sizeof(Ag));
-                    int num_pontos_cruz;
-                    double taxa_troca_seg;
-                    int max_iter_sem_melhoria;
-                    Mutacao oper_mut;
-                    Cruzamento oper_cruz;
-                    Selecao metodo_selec;
-                    unsigned long rng_seed;
-                }
