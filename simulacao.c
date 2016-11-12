@@ -43,7 +43,6 @@ void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned long* seed)
 void init_estado(Estado* e, long unsigned* seed)
 {
     init_tabuleiro(e->tabuleiro, seed);
-    //print_tabuleiro(e->tabuleiro);
     e->pos_x = e->pos_y = 1;
     e->pontuacao = 0;
 }

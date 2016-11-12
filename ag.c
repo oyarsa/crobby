@@ -26,11 +26,6 @@ Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos);
 void selecionar(Ag* ag, Solucao** populacao, Solucao*** pais);
 void cruzamento(Ag* ag, Solucao*** pais, int** filhos);
 void mutacao(Ag* ag, int** cromossomos);
-void avaliar(int** cromossomos, int n, Solucao** solucoes);
-void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole); //
-void perturbar_populacao(Ag* ag, Solucao** populacao); //
-void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais); //
-void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais);//
 void executar_cruzamento(Ag* ag, Solucao* pai1, Solucao* pai2, int** filho1, int** filho2);
 void cruz_multiplos_pontos(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2);
 void cruz_segmentado(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2);
@@ -40,7 +35,13 @@ void cruzar_from_pontos(int* pontos_cruz, int npontos, int* pai1, int* pai2,
     int** filho1, int** filho2);
 int* gerar_mascara(Ag* ag);
 void vizinhanca(Ag* ag, int** cromossomos);
+
+void avaliar(int** cromossomos, int n, Solucao** solucoes);
 int* gerar_solucao_aleatoria(Ag* ag); //
+void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole); //
+void perturbar_populacao(Ag* ag, Solucao** populacao); //
+void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais); //
+void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais); //
 Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao); //
 double* criar_roleta(Ag* ag, Solucao** populacao); //
 double* normalizar_populacao(Ag* ag, Solucao** populacao); //
@@ -260,4 +261,64 @@ Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos)
     Solucao** avaliados = myalloc(num_individuos * sizeof(Solucao*));
     avaliar(pop, num_individuos, avaliados);
     return avaliados;
+}
+
+int* gerar_solucao_aleatoria(Ag* ag)
+{
+    int* genes = myalloc(TAM_CROM * sizeof(int));
+    for (int i = 0; i < TAM_CROM; i++) {
+        genes[i] = xorshift(&ag->rng_seed) % TOTAL_MOVIMENTOS;
+    }
+    return genes;
+}
+
+void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole)
+{
+    int begin = ag->tam_populacao - 2 * ag->num_cruzamentos;
+    for (int i = begin; i < ag->tam_populacao; i++) {
+        myfree(&populacao[i]);
+        populacao[i] = prole[i - begin];
+        prole[i - begin] = NULL;
+    }
+    qsort(populacao, ag->tam_populacao, sizeof(Solucao*), Solucao_cmp_desc);
+}
+
+void perturbar_populacao(Ag* ag, Solucao** populacao)
+{
+}
+
+void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais)
+{
+}
+
+void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais)
+{
+}
+
+Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao)
+{
+    return NULL;
+}
+
+double* criar_roleta(Ag* ag, Solucao** populacao)
+{
+    return NULL;
+}
+
+double* normalizar_populacao(Ag* ag, Solucao** populacao)
+{
+    return NULL;
+}
+
+int obter_indice_roleta(Ag* ag, double* roleta)
+{
+    return 0;
+}
+
+void avaliar(int** cromossomos, int n, Solucao** solucoes)
+{
+    unsigned long seed = time(NULL);
+    for (int i = 0; i < n; i++) {
+        solucoes[i] = Solucao_nova(cromossomos[i], &seed);
+    }
 }

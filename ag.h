@@ -20,7 +20,6 @@ typedef enum {
 } Selecao;
 
 typedef struct Ag Ag;
-typedef struct AgBuilder AgBuilder;
 
 Solucao* Ag_resolver(Ag* ag);
 

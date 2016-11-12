@@ -30,5 +30,5 @@ void teste_ag()
 
 int main()
 {
-    //teste_avaliacao();
+    teste_avaliacao();
 }

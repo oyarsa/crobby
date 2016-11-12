@@ -23,6 +23,6 @@ double Cronometro_tempo_decorrido(Cronometro* c)
 
 void Cronometro_free(Cronometro** c)
 {
-    myfree(c);
-    c = NULL;
+    myfree(*c);
+    *c = NULL;
 }
