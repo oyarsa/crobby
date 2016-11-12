@@ -289,30 +289,67 @@ void perturbar_populacao(Ag* ag, Solucao** populacao)
 
 void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais)
 {
+    double* roleta = criar_roleta(ag, populacao);
+    for (int i = 0; i < ag->tam_populacao; i++) {
+        pais[i][0] = populacao[obter_indice_roleta(ag, roleta)];
+        pais[i][1] = populacao[obter_indice_roleta(ag, roleta)];
+    }
 }
 
 void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais)
 {
+    for (int i = 0; i < ag->tam_populacao; i++) {
+        pais[i][0] = obter_individuo_torneio(ag, populacao);
+        pais[i][1] = obter_individuo_torneio(ag, populacao);
+    }
 }
 
 Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao)
 {
-    return NULL;
+    Solucao* best = NULL;
+    for (int i = 0; i < ag->tam_torneio; i++) {
+        Solucao* cur = populacao[xorshift(&ag->rng_seed) % ag->tam_populacao];
+        if (best == NULL || Solucao_cmp_desc(&cur, &best) < 0) {
+            best = cur;
+        }
+    }
+    return best;
 }
 
 double* criar_roleta(Ag* ag, Solucao** populacao)
 {
-    return NULL;
+    double* aptidoes = normalizar_populacao(ag, populacao);
+    double* roleta = myalloc(ag->tam_populacao * sizeof(double));
+    double acc = 0.0;
+
+    for (int i = 0; i < ag->tam_populacao; i++) {
+        acc += aptidoes[i];
+        roleta[i] = acc;
+    }
+
+    myfree(&apitdoes);
+    return roleta;
 }
 
 double* normalizar_populacao(Ag* ag, Solucao** populacao)
 {
-    return NULL;
+    double min = Solucao_fo(populacao[ag->tam_populacao - 1]);
+    double* aptidoes = myalloc(ag->tam_populacao * sizeof(double));
+    for (int i = 0; i < ag->tam_populacao; i++) {
+        aptidoes[i] = Solucao_fo(populacao[i]) - min + 1;
+    }
+    return aptidoes;
 }
 
 int obter_indice_roleta(Ag* ag, double* roleta)
 {
-    return 0;
+    float x = xorshiftf(ag->rng_seed) * roleta[ag->tam_populacao - 1];
+    for (int i = 0; i < ag->tam_populacao; i++) {
+        if (roleta[i] > x) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void avaliar(int** cromossomos, int n, Solucao** solucoes)
