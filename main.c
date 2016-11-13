@@ -4,6 +4,7 @@
 #include "solucao.h"
 #include "mem.h"
 #include "cronometro.h"
+#include "ag.h"
 
 void teste_avaliacao()
 {
@@ -26,9 +27,14 @@ void teste_avaliacao()
 
 void teste_ag()
 {
+    AgBuilder agb = AgBuilder_novo();
+    Ag* ag = create_ag(&agb);
+    Solucao* s = Ag_resolver(ag);
+    printf("%g\n", Solucao_fo(s));
 }
 
 int main()
 {
-    teste_avaliacao();
+    //teste_avaliacao();
+    teste_ag();
 }

@@ -25,6 +25,7 @@ Solucao* Ag_resolver(Ag* ag);
 
 typedef struct {
     double taxa_mutacao;
+    double taxa_cruzamento;
     int tam_populacao;
     int num_geracoes;
     int tam_torneio;

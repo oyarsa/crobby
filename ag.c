@@ -47,7 +47,7 @@ double* criar_roleta(Ag* ag, Solucao** populacao); //
 double* normalizar_populacao(Ag* ag, Solucao** populacao); //
 int obter_indice_roleta(Ag* ag, double* roleta); //
 
-Solucao* resolver(Ag* ag)
+Solucao* Ag_resolver(Ag* ag)
 {
     assert(ag);
 
@@ -55,7 +55,11 @@ Solucao* resolver(Ag* ag)
     int iter_sem_melhoria = 0;
     double melhor_fo = Solucao_fo(populacao[0]);
 
-    Solucao*** pais = myalloc(2 * ag->num_cruzamentos * sizeof(Solucao*));
+    Solucao*** pais = myalloc(ag->num_cruzamentos * sizeof(Solucao**));
+    for (int i = 0; i < ag->num_cruzamentos; i++) {
+        pais[i] = myalloc(2 * sizeof(Solucao*));
+    }
+
     int** filhos = myalloc(2 * ag->num_cruzamentos * sizeof(int*));
     Solucao** avaliados = myalloc(2 * ag->num_cruzamentos * sizeof(Solucao*));
 
@@ -298,7 +302,7 @@ void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais)
 
 void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais)
 {
-    for (int i = 0; i < ag->tam_populacao; i++) {
+    for (int i = 0; i < ag->num_cruzamentos; i++) {
         pais[i][0] = obter_individuo_torneio(ag, populacao);
         pais[i][1] = obter_individuo_torneio(ag, populacao);
     }
@@ -327,7 +331,7 @@ double* criar_roleta(Ag* ag, Solucao** populacao)
         roleta[i] = acc;
     }
 
-    myfree(&apitdoes);
+    myfree(&aptidoes);
     return roleta;
 }
 
@@ -343,7 +347,7 @@ double* normalizar_populacao(Ag* ag, Solucao** populacao)
 
 int obter_indice_roleta(Ag* ag, double* roleta)
 {
-    float x = xorshiftf(ag->rng_seed) * roleta[ag->tam_populacao - 1];
+    float x = xorshiftf(&ag->rng_seed) * roleta[ag->tam_populacao - 1];
     for (int i = 0; i < ag->tam_populacao; i++) {
         if (roleta[i] > x) {
             return i;
@@ -358,4 +362,41 @@ void avaliar(int** cromossomos, int n, Solucao** solucoes)
     for (int i = 0; i < n; i++) {
         solucoes[i] = Solucao_nova(cromossomos[i], &seed);
     }
+}
+
+AgBuilder AgBuilder_novo()
+{
+    AgBuilder agb;
+    agb.taxa_mutacao = 0.005;
+    agb.taxa_cruzamento = 0.99;
+    agb.tam_populacao = 200;
+    agb.num_geracoes = 500;
+    agb.tam_torneio = 4;
+    agb.num_pontos_cruz = 4;
+    agb.taxa_troca_seg = 0.2;
+    agb.max_iter_sem_melhoria = 10;
+    agb.oper_mut = VIZINHANCA;
+    agb.oper_cruz = MULTIPLOS_PONTOS;
+    agb.metodo_selec = TORNEIO;
+    return agb;
+}
+
+Ag* create_ag(AgBuilder* agb)
+{
+    Ag* ag = myalloc(sizeof(Ag));
+
+    ag->taxa_mutacao = agb->taxa_mutacao;
+    ag->tam_populacao = agb->tam_populacao;
+    ag->num_geracoes = agb->num_geracoes;
+    ag->num_cruzamentos = (int)agb->tam_populacao * agb->taxa_cruzamento / 2;
+    ag->tam_torneio = agb->tam_torneio;
+    ag->num_pontos_cruz = agb->num_pontos_cruz;
+    ag->taxa_troca_seg = agb->taxa_troca_seg;
+    ag->max_iter_sem_melhoria = agb->max_iter_sem_melhoria;
+    ag->oper_mut = agb->oper_mut;
+    ag->oper_cruz = agb->oper_cruz;
+    ag->metodo_selec = agb->metodo_selec;
+    ag->rng_seed = time(NULL);
+
+    return ag;
 }
