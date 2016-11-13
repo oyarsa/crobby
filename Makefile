@@ -1,23 +1,20 @@
 TARGET_EXEC ?= robby
 
 BUILD_DIR ?= ./build
-SRC_DIRS ?= .
+SRC_DIRS ?= ./src
 
-SRCS := $(wildcard *.c)
+SRCS := $(wildcard $(SRC_DIRS)/*.c)
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-INC_DIRS := $(shell find $(SRC_DIRS) -type d)
-INC_FLAGS := $(addprefix -I,$(INC_DIRS))
-
 CFLAGS += -std=c99 -Wall -fopenmp
 #CFLAGS += -DDEBUG -g -O0
-CFLAGS += -DNDEBUG -O3
+CFLAGS += -DNDEBUG -O3 -g -gdwarf-2
+CC = gcc
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
-# c source
 $(BUILD_DIR)/%.c.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
