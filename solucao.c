@@ -9,7 +9,7 @@ struct Solucao {
     double fo;
 };
 
-double calcula_fo(int* cromossomo, unsigned long* seed)
+double calcula_fo(int* cromossomo, unsigned* seed)
 {
     double soma = 0.0;
 
@@ -20,7 +20,7 @@ double calcula_fo(int* cromossomo, unsigned long* seed)
     return soma / NUM_SESSOES;
 }
 
-Solucao* Solucao_nova(int* cromossomo, unsigned long* seed)
+Solucao* Solucao_nova(int* cromossomo, unsigned* seed)
 {
     Solucao* s = myalloc(sizeof(Solucao));
     s->cromossomo = cromossomo;

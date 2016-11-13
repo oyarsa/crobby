@@ -12,7 +12,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
 CFLAGS += -std=c99 -Wall -fopenmp
 #CFLAGS += -DDEBUG -g -O0
-CFLAGS += -DNDEBUG -O3 -pg
+CFLAGS += -DNDEBUG -O3
 
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)

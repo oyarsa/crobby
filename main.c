@@ -15,7 +15,7 @@ void teste_avaliacao()
         genes[i] = cstr[i] - '0';
     }
 
-    unsigned long seed = time(NULL);
+    unsigned seed = time(NULL);
 
     Cronometro* c = Cronometro_novo();
     Solucao* s = Solucao_nova(genes, &seed);

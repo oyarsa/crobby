@@ -9,7 +9,6 @@
 #include "ag.h"
 #include "constantes.h"
 #include "mem.h"
-#include "rand.h"
 
 struct Ag {
     double taxa_mutacao;
@@ -375,11 +374,9 @@ int obter_indice_roleta(Ag* ag, double* roleta)
 
 void avaliar(int** cromossomos, int n, Solucao** solucoes)
 {
-    unsigned long seed;
-#pragma omp parallel private(seed) shared(solucoes, cromossomos)
+    unsigned seed;
     {
-        seed = time(NULL) ^ (omp_get_thread_num() + 1);
-#pragma omp for
+        seed = time(NULL);
         for (int i = 0; i < n; i++) {
             solucoes[i] = Solucao_nova(cromossomos[i], &seed);
         }

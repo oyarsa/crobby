@@ -3,7 +3,7 @@
 
 typedef struct Solucao Solucao;
 
-Solucao* Solucao_nova(int* cromossomo, unsigned long* seed);
+Solucao* Solucao_nova(int* cromossomo, unsigned* seed);
 double Solucao_fo(Solucao* s);
 int* Solucao_cromossomo(Solucao* s);
 void Solucao_free(Solucao* s);
