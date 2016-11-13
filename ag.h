@@ -38,6 +38,7 @@ typedef struct {
 } AgBuilder;
 
 AgBuilder AgBuilder_novo();
-Ag* create_ag(AgBuilder* agb);
+Ag* Ag_create(AgBuilder* agb);
+void Ag_free(Ag* ag);
 
 #endif // AG_H

@@ -21,16 +21,23 @@ void teste_avaliacao()
     Solucao* s = Solucao_nova(genes, &seed);
     printf("%g, %gs\n", Solucao_fo(s), Cronometro_tempo_decorrido(c));
 
-    Cronometro_free(&c);
-    Solucao_free(&s);
+    Cronometro_free(c);
+    Solucao_free(s);
 }
 
 void teste_ag()
 {
     AgBuilder agb = AgBuilder_novo();
-    Ag* ag = create_ag(&agb);
+    agb.num_geracoes = 500;
+    Ag* ag = Ag_create(&agb);
+
+    Cronometro* c = Cronometro_novo();
     Solucao* s = Ag_resolver(ag);
-    printf("%g\n", Solucao_fo(s));
+    printf("%g, %gs\n", Solucao_fo(s), Cronometro_tempo_decorrido(c));
+
+    Cronometro_free(c);
+    Solucao_free(s);
+    Ag_free(ag);
 }
 
 int main()

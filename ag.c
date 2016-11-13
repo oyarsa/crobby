@@ -1,7 +1,11 @@
+#define _XOPEN_SOURCE
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <assert.h>
 #include <stdbool.h>
 #include <time.h>
+#include <omp.h>
 #include "ag.h"
 #include "constantes.h"
 #include "mem.h"
@@ -19,7 +23,7 @@ struct Ag {
     Mutacao oper_mut;
     Cruzamento oper_cruz;
     Selecao metodo_selec;
-    unsigned long rng_seed;
+    unsigned rng_seed;
 };
 
 Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos);
@@ -64,6 +68,8 @@ Solucao* Ag_resolver(Ag* ag)
     Solucao** avaliados = myalloc(2 * ag->num_cruzamentos * sizeof(Solucao*));
 
     for (int i = 0; i < ag->num_geracoes; i++) {
+        //printf("%d: %g\n", i + 1, Solucao_fo(populacao[0]));
+
         selecionar(ag, populacao, pais);
         cruzamento(ag, pais, filhos);
         mutacao(ag, filhos);
@@ -83,15 +89,20 @@ Solucao* Ag_resolver(Ag* ag)
         }
     }
 
-    myfree(&pais);
-    myfree(&filhos);
-    myfree(&avaliados);
+    for (int i = 0; i < ag->num_cruzamentos; i++) {
+        myfree(pais[i]);
+    }
+    myfree(pais);
+    myfree(filhos);
+    myfree(avaliados);
 
     for (int i = 1; i < ag->tam_populacao; i++) {
-        myfree(&populacao[i]);
+        Solucao_free(populacao[i]);
     }
 
-    return populacao[0];
+    Solucao* best = populacao[0];
+    myfree(populacao);
+    return best;
 }
 
 void selecionar(Ag* ag, Solucao** populacao, Solucao*** pais)
@@ -109,9 +120,10 @@ void selecionar(Ag* ag, Solucao** populacao, Solucao*** pais)
 
 void cruzamento(Ag* ag, Solucao*** pais, int** filhos)
 {
+    int j = 0;
     for (int i = 0; i < ag->num_cruzamentos; i++) {
-        executar_cruzamento(ag, pais[i][0], pais[i][1],
-            &filhos[2 * i], &filhos[2 * i + 1]);
+        executar_cruzamento(ag, pais[i][0], pais[i][1], &filhos[j], &filhos[j + 1]);
+        j += 2;
     }
 }
 
@@ -149,11 +161,11 @@ void cruz_multiplos_pontos(Ag* ag, int* pai1, int* pai2, int** filho1, int** fil
 {
     int* pontos_cruz = myalloc((ag->num_pontos_cruz + 1) * sizeof(int));
     for (int i = 0; i < ag->num_pontos_cruz; i++) {
-        pontos_cruz[i] = xorshift(&ag->rng_seed) % TAM_CROM;
+        pontos_cruz[i] = rand_r(&ag->rng_seed) % TAM_CROM;
     }
     pontos_cruz[ag->num_pontos_cruz] = TAM_CROM;
     qsort(pontos_cruz, ag->num_pontos_cruz + 1, sizeof(int), compar_int);
-    cruzar_from_pontos(pontos_cruz, ag->num_pontos_cruz, pai1, pai2, filho1, filho2);
+    cruzar_from_pontos(pontos_cruz, ag->num_pontos_cruz + 1, pai1, pai2, filho1, filho2);
 }
 
 void cruz_segmentado(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2)
@@ -161,7 +173,8 @@ void cruz_segmentado(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2)
     int* pontos_cruz = myalloc(TAM_CROM * sizeof(int));
     int n = 0;
     for (int i = 0; i < TAM_CROM; i++) {
-        if (xorshiftf(&ag->rng_seed) <= ag->taxa_troca_seg) {
+        double x = rand_r(&ag->rng_seed) / (double)RAND_MAX;
+        if (x <= ag->taxa_troca_seg) {
             pontos_cruz[n] = i;
             n++;
         }
@@ -176,7 +189,8 @@ int* gerar_mascara(Ag* ag)
 {
     int* mask = myalloc(TAM_CROM * sizeof(int));
     for (int i = 0; i < TAM_CROM; i++) {
-        mask[i] = xorshiftf(&ag->rng_seed) <= 0.5 ? 1 : 0;
+        double x = rand_r(&ag->rng_seed) / (double)RAND_MAX;
+        mask[i] = x <= 0.5 ? 1 : 0;
     }
     return mask;
 }
@@ -203,7 +217,7 @@ void cruz_um_ponto(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2)
 {
     *filho1 = myalloc(TAM_CROM * sizeof(int));
     *filho2 = myalloc(TAM_CROM * sizeof(int));
-    int ponto = xorshift(&ag->rng_seed) % TAM_CROM;
+    int ponto = rand_r(&ag->rng_seed) % TAM_CROM;
 
     memcpy(*filho1, pai1, ponto);
     memcpy(*filho2, pai2, ponto);
@@ -224,11 +238,11 @@ void cruzar_from_pontos(int* pontos_cruz, int npontos, int* pai1, int* pai2,
     for (int i = 0; i < npontos; i++) {
         for (; j < pontos_cruz[i]; j++) {
             if (flip) {
-                *filho1[j] = pai1[j];
-                *filho2[j] = pai2[j];
+                (*filho1)[j] = pai1[j];
+                (*filho2)[j] = pai2[j];
             } else {
-                *filho1[j] = pai2[j];
-                *filho2[j] = pai1[j];
+                (*filho1)[j] = pai2[j];
+                (*filho2)[j] = pai1[j];
             }
         }
         flip = !flip;
@@ -247,10 +261,12 @@ void mutacao(Ag* ag, int** cromossomos)
 
 void vizinhanca(Ag* ag, int** cromossomos)
 {
-    for (int i = 0; ag->tam_populacao; i++) {
+    int num_filhos = 2 * ag->num_cruzamentos;
+    for (int i = 0; i < num_filhos; i++) {
         for (int j = 0; j < TAM_CROM; j++) {
-            if (xorshiftf(&ag->rng_seed) <= ag->taxa_mutacao) {
-                cromossomos[i][j] = xorshift(&ag->rng_seed) % TOTAL_MOVIMENTOS;
+            double x = rand_r(&ag->rng_seed) / (double)RAND_MAX;
+            if (x <= ag->taxa_mutacao) {
+                cromossomos[i][j] = rand_r(&ag->rng_seed) % TOTAL_MOVIMENTOS;
             }
         }
     }
@@ -259,11 +275,12 @@ void vizinhanca(Ag* ag, int** cromossomos)
 Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos)
 {
     int** pop = myalloc(num_individuos * sizeof(int*));
-    for (int i = 0; i < ag->tam_populacao; i++) {
+    for (int i = 0; i < num_individuos; i++) {
         pop[i] = gerar_solucao_aleatoria(ag);
     }
     Solucao** avaliados = myalloc(num_individuos * sizeof(Solucao*));
     avaliar(pop, num_individuos, avaliados);
+    myfree(pop);
     return avaliados;
 }
 
@@ -271,7 +288,7 @@ int* gerar_solucao_aleatoria(Ag* ag)
 {
     int* genes = myalloc(TAM_CROM * sizeof(int));
     for (int i = 0; i < TAM_CROM; i++) {
-        genes[i] = xorshift(&ag->rng_seed) % TOTAL_MOVIMENTOS;
+        genes[i] = rand_r(&ag->rng_seed) % TOTAL_MOVIMENTOS;
     }
     return genes;
 }
@@ -280,7 +297,7 @@ void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole)
 {
     int begin = ag->tam_populacao - 2 * ag->num_cruzamentos;
     for (int i = begin; i < ag->tam_populacao; i++) {
-        myfree(&populacao[i]);
+        Solucao_free(populacao[i]);
         populacao[i] = prole[i - begin];
         prole[i - begin] = NULL;
     }
@@ -312,7 +329,7 @@ Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao)
 {
     Solucao* best = NULL;
     for (int i = 0; i < ag->tam_torneio; i++) {
-        Solucao* cur = populacao[xorshift(&ag->rng_seed) % ag->tam_populacao];
+        Solucao* cur = populacao[rand_r(&ag->rng_seed) % ag->tam_populacao];
         if (best == NULL || Solucao_cmp_desc(&cur, &best) < 0) {
             best = cur;
         }
@@ -331,7 +348,7 @@ double* criar_roleta(Ag* ag, Solucao** populacao)
         roleta[i] = acc;
     }
 
-    myfree(&aptidoes);
+    myfree(aptidoes);
     return roleta;
 }
 
@@ -347,7 +364,7 @@ double* normalizar_populacao(Ag* ag, Solucao** populacao)
 
 int obter_indice_roleta(Ag* ag, double* roleta)
 {
-    float x = xorshiftf(&ag->rng_seed) * roleta[ag->tam_populacao - 1];
+    double x = (rand_r(&ag->rng_seed) / (double)RAND_MAX) * roleta[ag->tam_populacao - 1];
     for (int i = 0; i < ag->tam_populacao; i++) {
         if (roleta[i] > x) {
             return i;
@@ -358,9 +375,14 @@ int obter_indice_roleta(Ag* ag, double* roleta)
 
 void avaliar(int** cromossomos, int n, Solucao** solucoes)
 {
-    unsigned long seed = time(NULL);
-    for (int i = 0; i < n; i++) {
-        solucoes[i] = Solucao_nova(cromossomos[i], &seed);
+    unsigned long seed;
+#pragma omp parallel private(seed) shared(solucoes, cromossomos)
+    {
+        seed = time(NULL) ^ (omp_get_thread_num() + 1);
+#pragma omp for
+        for (int i = 0; i < n; i++) {
+            solucoes[i] = Solucao_nova(cromossomos[i], &seed);
+        }
     }
 }
 
@@ -381,7 +403,7 @@ AgBuilder AgBuilder_novo()
     return agb;
 }
 
-Ag* create_ag(AgBuilder* agb)
+Ag* Ag_create(AgBuilder* agb)
 {
     Ag* ag = myalloc(sizeof(Ag));
 
@@ -399,4 +421,9 @@ Ag* create_ag(AgBuilder* agb)
     ag->rng_seed = time(NULL);
 
     return ag;
+}
+
+void Ag_free(Ag* ag)
+{
+    myfree(ag);
 }

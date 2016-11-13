@@ -1,6 +1,7 @@
+#define _XOPEN_SOURCE
 #include <stdio.h>
+#include <stdlib.h>
 #include "constantes.h"
-#include "rand.h"
 
 typedef struct
 {
@@ -10,8 +11,8 @@ typedef struct
     int pontuacao;
 } Estado;
 
-void proximo_estado(Estado* e, int movimento, unsigned long* seed);
-void move_aleatorio(Estado* e, unsigned long* seed);
+void proximo_estado(Estado* e, int movimento, unsigned* seed);
+void move_aleatorio(Estado* e, unsigned* seed);
 
 void print_tabuleiro(int tabuleiro[][TAM_GRID])
 {
@@ -24,7 +25,7 @@ void print_tabuleiro(int tabuleiro[][TAM_GRID])
     printf("\n");
 }
 
-void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned long* seed)
+void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned* seed)
 {
     for (int i = 0; i < TAM_GRID; i++) {
         tabuleiro[i][0] = PAREDE;
@@ -35,12 +36,13 @@ void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned long* seed)
 
     for (int i = 1; i < TAM_GRID - 1; i++) {
         for (int j = 1; j < TAM_GRID - 1; j++) {
-            tabuleiro[i][j] = xorshiftf(seed) <= 0.5 ? LATA : VAZIO;
+            double x = rand_r(seed) / (double)RAND_MAX;
+            tabuleiro[i][j] = x <= 0.5 ? LATA : VAZIO;
         }
     }
 }
 
-void init_estado(Estado* e, long unsigned* seed)
+void init_estado(Estado* e, unsigned* seed)
 {
     init_tabuleiro(e->tabuleiro, seed);
     e->pos_x = e->pos_y = 1;
@@ -104,7 +106,7 @@ void pega_lata(Estado* e)
     }
 }
 
-void proximo_estado(Estado* e, int movimento, unsigned long* seed)
+void proximo_estado(Estado* e, int movimento, unsigned* seed)
 {
     switch (movimento) {
     case MOVE_NORTE:
@@ -131,13 +133,13 @@ void proximo_estado(Estado* e, int movimento, unsigned long* seed)
     }
 }
 
-void move_aleatorio(Estado* e, unsigned long* seed)
+void move_aleatorio(Estado* e, unsigned* seed)
 {
-    int movimento = xorshift(seed) % TOTAL_MOVIMENTOS;
+    int movimento = rand_r(seed) % TOTAL_MOVIMENTOS;
     proximo_estado(e, movimento, seed);
 }
 
-int nova_simulacao(int* cromossomo, unsigned long* seed)
+int nova_simulacao(int* cromossomo, unsigned* seed)
 {
     Estado e;
     init_estado(&e, seed);

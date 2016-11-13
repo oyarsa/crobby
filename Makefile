@@ -10,10 +10,12 @@ DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
 INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 
-$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
+CFLAGS += -std=c99 -Wall -fopenmp
+#CFLAGS += -DDEBUG -g -O0
+CFLAGS += -DNDEBUG -O3 -pg
 
-CFLAGS += -std=c99 -Wall -g
+$(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@ $(LDFLAGS)
 
 # c source
 $(BUILD_DIR)/%.c.o: %.c
@@ -21,7 +23,6 @@ $(BUILD_DIR)/%.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 .PHONY: clean
-
 clean:
 	$(RM) -r $(BUILD_DIR)
 

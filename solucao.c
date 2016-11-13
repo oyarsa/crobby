@@ -40,11 +40,10 @@ int* Solucao_cromossomo(Solucao* s)
     return s->cromossomo;
 }
 
-void Solucao_free(Solucao** s)
+void Solucao_free(Solucao* s)
 {
-    myfree((*s)->cromossomo);
-    myfree(*s);
-    *s = NULL;
+    myfree(s->cromossomo);
+    myfree(s);
 }
 
 int Solucao_cmp_desc(const void* a, const void* b)

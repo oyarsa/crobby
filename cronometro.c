@@ -21,8 +21,7 @@ double Cronometro_tempo_decorrido(Cronometro* c)
     return (double)(agora - c->comeco) / (double)CLOCKS_PER_SEC;
 }
 
-void Cronometro_free(Cronometro** c)
+void Cronometro_free(Cronometro* c)
 {
-    myfree(*c);
-    *c = NULL;
+    myfree(c);
 }
