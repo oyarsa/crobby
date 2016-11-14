@@ -1,4 +1,3 @@
-#include <assert.h>
 #include "solucao.h"
 #include "simulacao.h"
 #include "constantes.h"
@@ -30,13 +29,11 @@ Solucao* Solucao_nova(int* cromossomo, unsigned long* seed)
 
 double Solucao_fo(Solucao* s)
 {
-    assert(s);
     return s->fo;
 }
 
 int* Solucao_cromossomo(Solucao* s)
 {
-    assert(s);
     return s->cromossomo;
 }
 

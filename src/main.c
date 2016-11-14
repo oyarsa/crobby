@@ -6,6 +6,14 @@
 #include "cronometro.h"
 #include "ag.h"
 
+void print_crom(int* cromossomo)
+{
+    for (int i = 0; i < TAM_CROM; i++) {
+        printf("%d", cromossomo[i]);
+    }
+    printf("\n");
+}
+
 void teste_avaliacao()
 {
     char cstr[] = "360353003053624022343046544151664253264654254406132601244625324426641432620215262066064443254034144531341433655664056335163054534043220266636353562346042663630315216456253252656455641566605115431214154445214431613043365440130042415066610554501";
@@ -38,6 +46,8 @@ void teste_ag()
     Cronometro* c = Cronometro_novo();
     Solucao* s = Ag_resolver(ag);
     printf("%g, %gs\n", Solucao_fo(s), Cronometro_tempo_decorrido(c));
+    printf("Cromossomo: ");
+    print_crom(Solucao_cromossomo(s));
 
     Cronometro_free(c);
     Solucao_free(s);

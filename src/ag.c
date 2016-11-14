@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include <stdbool.h>
 #include <time.h>
 #include <omp.h>
@@ -39,7 +38,6 @@ void cruzar_from_pontos(int* pontos_cruz, int npontos, int* pai1, int* pai2,
     int** filho1, int** filho2);
 int* gerar_mascara(Ag* ag);
 void vizinhanca(Ag* ag, int** cromossomos);
-
 void avaliar(int** cromossomos, int n, Solucao** solucoes);
 int* gerar_solucao_aleatoria(Ag* ag); //
 void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole); //
@@ -53,8 +51,6 @@ int obter_indice_roleta(Ag* ag, double* roleta); //
 
 Solucao* Ag_resolver(Ag* ag)
 {
-    assert(ag);
-
     Solucao** populacao = gerar_individuos_aleatorios(ag, ag->tam_populacao);
     int iter_sem_melhoria = 0;
     double melhor_fo = Solucao_fo(populacao[0]);
@@ -383,7 +379,7 @@ int obter_indice_roleta(Ag* ag, double* roleta)
 void avaliar(int** cromossomos, int n, Solucao** solucoes)
 {
     unsigned long seed;
-#pragma omp parallel private(seed) shared(n)
+#pragma omp parallel private(seed)
     {
         seed = time(NULL) ^ omp_get_thread_num();
 #pragma omp for

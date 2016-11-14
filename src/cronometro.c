@@ -1,5 +1,4 @@
 #include <time.h>
-#include <assert.h>
 #include "cronometro.h"
 #include "mem.h"
 
@@ -16,7 +15,6 @@ Cronometro* Cronometro_novo()
 
 double Cronometro_tempo_decorrido(Cronometro* c)
 {
-    assert(c);
     clock_t agora = clock();
     return (double)(agora - c->comeco) / (double)CLOCKS_PER_SEC;
 }
