@@ -24,18 +24,18 @@ typedef struct Ag Ag;
 Solucao* Ag_resolver(Ag* ag);
 
 typedef struct {
-    double taxa_mutacao;
-    double taxa_cruzamento;
-    int tam_populacao;
+    double taxa_mutacao; // 0.005, 0.010
+    double taxa_cruzamento; // 0.95, 0.99
+    int tam_populacao; // 200, 400, 800
     int num_geracoes;
-    int tam_torneio;
-    int num_pontos_cruz;
-    double taxa_troca_seg;
-    int max_iter_sem_melhoria;
-    double taxa_perturbacao;
-    Mutacao oper_mut;
-    Cruzamento oper_cruz;
-    Selecao metodo_selec;
+    int tam_torneio; // 2, 4
+    int num_pontos_cruz; // 2, 4
+    double taxa_troca_seg; // fixo em 0.2
+    int max_iter_sem_melhoria; // 10, 20
+    double taxa_perturbacao; // 0.2, 0.5, 0.8
+    Mutacao oper_mut; // fixo em VIZINHANCA
+    Cruzamento oper_cruz; // UNIFORME, UM_PONTO, MULTIPLOS_PONTOS, SEGMENTADO
+    Selecao metodo_selec; // TORNEIO, ROLETA
     double tempo_max;
 } Agbuilder;
 

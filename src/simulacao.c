@@ -1,4 +1,3 @@
-#define _XOPEN_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include "constantes.h"
@@ -12,10 +11,7 @@ typedef struct
     int pontuacao;
 } Estado;
 
-void proximo_estado(Estado* e, int movimento, unsigned long* seed);
-void move_aleatorio(Estado* e, unsigned long* seed);
-
-void print_tabuleiro(int tabuleiro[][TAM_GRID])
+static inline void print_tabuleiro(int tabuleiro[][TAM_GRID])
 {
     for (int i = 0; i < TAM_GRID; i++) {
         for (int j = 0; j < TAM_GRID; j++) {
@@ -26,7 +22,7 @@ void print_tabuleiro(int tabuleiro[][TAM_GRID])
     printf("\n");
 }
 
-void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned long* seed)
+static inline void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned long* seed)
 {
     for (int i = 0; i < TAM_GRID; i++) {
         tabuleiro[i][0] = PAREDE;
@@ -43,14 +39,14 @@ void init_tabuleiro(int tabuleiro[][TAM_GRID], unsigned long* seed)
     }
 }
 
-void init_estado(Estado* e, unsigned long* seed)
+static inline void init_estado(Estado* e, unsigned long* seed)
 {
     init_tabuleiro(e->tabuleiro, seed);
     e->pos_x = e->pos_y = 1;
     e->pontuacao = 0;
 }
 
-int get_cenario(Estado* e)
+static inline int get_cenario(Estado* e)
 {
     int norte = e->tabuleiro[e->pos_y - 1][e->pos_x];
     int oeste = e->tabuleiro[e->pos_y][e->pos_x - 1];
@@ -61,7 +57,7 @@ int get_cenario(Estado* e)
     return 81 * norte + 27 * sul + 9 * leste + 3 * oeste + atual;
 }
 
-void move_norte(Estado* e)
+static inline void move_norte(Estado* e)
 {
     if (e->tabuleiro[e->pos_y - 1][e->pos_x] == PAREDE) {
         e->pontuacao -= PENALIDADE_PAREDE;
@@ -70,7 +66,7 @@ void move_norte(Estado* e)
     }
 }
 
-void move_sul(Estado* e)
+static inline void move_sul(Estado* e)
 {
     if (e->tabuleiro[e->pos_y + 1][e->pos_x] == PAREDE) {
         e->pontuacao -= PENALIDADE_PAREDE;
@@ -79,7 +75,7 @@ void move_sul(Estado* e)
     }
 }
 
-void move_leste(Estado* e)
+static inline void move_leste(Estado* e)
 {
     if (e->tabuleiro[e->pos_y][e->pos_x + 1] == PAREDE) {
         e->pontuacao -= PENALIDADE_PAREDE;
@@ -88,7 +84,7 @@ void move_leste(Estado* e)
     }
 }
 
-void move_oeste(Estado* e)
+static inline void move_oeste(Estado* e)
 {
     if (e->tabuleiro[e->pos_y][e->pos_x - 1] == PAREDE) {
         e->pontuacao -= PENALIDADE_PAREDE;
@@ -97,7 +93,7 @@ void move_oeste(Estado* e)
     }
 }
 
-void pega_lata(Estado* e)
+static inline void pega_lata(Estado* e)
 {
     if (e->tabuleiro[e->pos_y][e->pos_x] == LATA) {
         e->tabuleiro[e->pos_y][e->pos_x] = VAZIO;
@@ -105,6 +101,15 @@ void pega_lata(Estado* e)
     } else {
         e->pontuacao -= PENALIDADE_LATA;
     }
+}
+
+static inline void proximo_estado(Estado* e, int movimento, unsigned long* seed);
+static inline void move_aleatorio(Estado* e, unsigned long* seed);
+
+void move_aleatorio(Estado* e, unsigned long* seed)
+{
+    int movimento = myrand(seed) % TOTAL_MOVIMENTOS;
+    proximo_estado(e, movimento, seed);
 }
 
 void proximo_estado(Estado* e, int movimento, unsigned long* seed)
@@ -132,12 +137,6 @@ void proximo_estado(Estado* e, int movimento, unsigned long* seed)
         move_aleatorio(e, seed);
         break;
     }
-}
-
-void move_aleatorio(Estado* e, unsigned long* seed)
-{
-    int movimento = myrand(seed) % TOTAL_MOVIMENTOS;
-    proximo_estado(e, movimento, seed);
 }
 
 int nova_simulacao(int* cromossomo, unsigned long* seed)
