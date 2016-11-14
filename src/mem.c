@@ -10,9 +10,3 @@ void* myalloc(size_t nbytes)
     }
     return ptr;
 }
-
-void myfree(void* ptr)
-{
-    if (ptr)
-        free(ptr);
-}

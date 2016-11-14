@@ -86,18 +86,18 @@ Solucao* Ag_resolver(Ag* ag)
     }
 
     for (int i = 0; i < ag->num_cruzamentos; i++) {
-        myfree(pais[i]);
+        free(pais[i]);
     }
-    myfree(pais);
-    myfree(filhos);
-    myfree(avaliados);
+    free(pais);
+    free(filhos);
+    free(avaliados);
 
     for (int i = 1; i < ag->tam_populacao; i++) {
         Solucao_free(populacao[i]);
     }
 
     Solucao* best = populacao[0];
-    myfree(populacao);
+    free(populacao);
     return best;
 }
 
@@ -206,7 +206,7 @@ void cruz_uniforme(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2)
             *filho2[i] = pai1[i];
         }
     }
-    myfree(mask);
+    free(mask);
 }
 
 void cruz_um_ponto(Ag* ag, int* pai1, int* pai2, int** filho1, int** filho2)
@@ -244,7 +244,7 @@ void cruzar_from_pontos(int* pontos_cruz, int npontos, int* pai1, int* pai2,
         flip = !flip;
     }
 
-    myfree(pontos_cruz);
+    free(pontos_cruz);
 }
 
 void mutacao(Ag* ag, int** cromossomos)
@@ -276,7 +276,7 @@ Solucao** gerar_individuos_aleatorios(Ag* ag, int num_individuos)
     }
     Solucao** avaliados = myalloc(num_individuos * sizeof(Solucao*));
     avaliar(pop, num_individuos, avaliados);
-    myfree(pop);
+    free(pop);
     return avaliados;
 }
 
@@ -308,7 +308,7 @@ void perturbar_populacao(Ag* ag, Solucao** populacao)
         Solucao_free(populacao[i]);
         populacao[i] = perturbacoes[i - begin];
     }
-    myfree(perturbacoes);
+    free(perturbacoes);
 }
 
 void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais)
@@ -351,7 +351,7 @@ double* criar_roleta(Ag* ag, Solucao** populacao)
         roleta[i] = acc;
     }
 
-    myfree(aptidoes);
+    free(aptidoes);
     return roleta;
 }
 
@@ -428,5 +428,5 @@ Ag* Ag_create(AgBuilder* agb)
 
 void Ag_free(Ag* ag)
 {
-    myfree(ag);
+    free(ag);
 }
