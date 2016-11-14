@@ -120,11 +120,11 @@ void run_experimento()
     }
 
     Ag* ag = Ag_create(&agb);
-    printf("Exec,FO\n");
+    printf("ID,Exec,FO\n");
 
     for (int i = 0; i < NUM_ITER_EXPER; i++) {
         Solucao* s = Ag_resolver(ag);
-        printf("%d,%f\n", i, Solucao_fo(s));
+        printf("%s,%d,%f\n", id, i, Solucao_fo(s));
         Solucao_free(s);
     }
 
@@ -141,7 +141,7 @@ void print_usage()
     -h     mostra essa mensagem\n\
     -e     executa um experimento. Sera solicitado na entrada padrao um configuracao\n\
            no seguinte formato:\n\
-             ID %Mut %Cruz TPop TTor NPCruz MISM % Per OCruz MSelec";
+             ID %Mut %Cruz TPop TTor NPCruz MISM %Per OCruz MSelec";
 
   puts(usage);
     // clang-format on
