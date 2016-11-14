@@ -8,12 +8,10 @@ OBJS := $(SRCS:$(SRC_DIRS)/%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
 CFLAGS += -std=c99 -Wall -fopenmp
-## Debug
-#CFLAGS += -DDEBUG -g -O0
-## RelWithDebInfo
-#CFLAGS += -DNDEBUG -O3 -g -gdwarf-2
-# Release
-CFLAGS += -DNDEBUG -Ofast
+##  Debug
+#CFLAGS += -g -O0 -gdwarf-2
+##  Release
+CFLAGS += -Ofast -march=native -g -gdwarf-2
 
 CC = gcc
 

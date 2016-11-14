@@ -3,7 +3,7 @@
 #include "constantes.h"
 #include "solucao.h"
 #include "mem.h"
-#include "cronometro.h"
+#include "cronom.h"
 #include "ag.h"
 
 void print_crom(int* cromossomo)
@@ -25,17 +25,17 @@ void teste_avaliacao()
 
     unsigned long seed = time(NULL);
 
-    Cronometro* c = Cronometro_novo();
+    Cronom* c = Cronom_novo();
     Solucao* s = Solucao_nova(genes, &seed);
-    printf("%g, %gs\n", Solucao_fo(s), Cronometro_tempo_decorrido(c));
+    printf("%g, %gs\n", Solucao_fo(s), Cronom_tempo(c));
 
-    Cronometro_free(c);
+    Cronom_free(c);
     Solucao_free(s);
 }
 
 void teste_ag()
 {
-    AgBuilder agb = AgBuilder_novo();
+    Agbuilder agb = Agbuilder_novo();
     agb.num_geracoes = 500;
     agb.taxa_cruzamento = 0.99;
     agb.tam_torneio = 4;
@@ -43,13 +43,13 @@ void teste_ag()
     agb.num_pontos_cruz = 4;
     Ag* ag = Ag_create(&agb);
 
-    Cronometro* c = Cronometro_novo();
+    Cronom* c = Cronom_novo();
     Solucao* s = Ag_resolver(ag);
-    printf("%g, %gs\n", Solucao_fo(s), Cronometro_tempo_decorrido(c));
+    printf("%g, %gs\n", Solucao_fo(s), Cronom_tempo(c));
     printf("Cromossomo: ");
     print_crom(Solucao_cromossomo(s));
 
-    Cronometro_free(c);
+    Cronom_free(c);
     Solucao_free(s);
     Ag_free(ag);
 }

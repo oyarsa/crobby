@@ -126,7 +126,7 @@ void proximo_estado(Estado* e, int movimento, unsigned long* seed)
         pega_lata(e);
         break;
     case FICAR_PARADO:
-        /* Faz nada*/
+        /* Faz nada */
         break;
     case MOVE_ALEATORIO:
         move_aleatorio(e, seed);

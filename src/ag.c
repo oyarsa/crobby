@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <float.h>
 #include <omp.h>
 #include "ag.h"
+#include "cronom.h"
 #include "constantes.h"
 #include "mem.h"
 #include "rand.h"
@@ -19,9 +21,11 @@ struct Ag {
     int num_pontos_cruz;
     double taxa_troca_seg;
     int max_iter_sem_melhoria;
+    double taxa_perturbacao;
     Mutacao oper_mut;
     Cruzamento oper_cruz;
     Selecao metodo_selec;
+    double tempo_max;
     unsigned long rng_seed;
 };
 
@@ -51,6 +55,7 @@ int obter_indice_roleta(Ag* ag, double* roleta); //
 
 Solucao* Ag_resolver(Ag* ag)
 {
+    Cronom* c = Cronom_novo();
     Solucao** populacao = gerar_individuos_aleatorios(ag, ag->tam_populacao);
     int iter_sem_melhoria = 0;
     double melhor_fo = Solucao_fo(populacao[0]);
@@ -63,7 +68,7 @@ Solucao* Ag_resolver(Ag* ag)
     int** filhos = myalloc(2 * ag->num_cruzamentos * sizeof(int*));
     Solucao** avaliados = myalloc(2 * ag->num_cruzamentos * sizeof(Solucao*));
 
-    for (int i = 0; i < ag->num_geracoes; i++) {
+    for (int i = 0; i < ag->num_geracoes && Cronom_tempo(c) < ag->tempo_max; i++) {
         //printf("%d: %g\n", i + 1, Solucao_fo(populacao[0]));
 
         selecionar(ag, populacao, pais);
@@ -97,7 +102,9 @@ Solucao* Ag_resolver(Ag* ag)
     }
 
     Solucao* best = populacao[0];
+
     free(populacao);
+    Cronom_free(c);
     return best;
 }
 
@@ -301,7 +308,7 @@ void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole)
 
 void perturbar_populacao(Ag* ag, Solucao** populacao)
 {
-    int n = 0.8 * ag->tam_populacao;
+    int n = 0.4 * ag->tam_populacao;
     Solucao** perturbacoes = gerar_individuos_aleatorios(ag, n);
     int begin = ag->tam_populacao - n;
     for (int i = begin; i < ag->tam_populacao; i++) {
@@ -389,9 +396,9 @@ void avaliar(int** cromossomos, int n, Solucao** solucoes)
     }
 }
 
-AgBuilder AgBuilder_novo()
+Agbuilder Agbuilder_novo()
 {
-    AgBuilder agb;
+    Agbuilder agb;
     agb.taxa_mutacao = 0.005;
     agb.taxa_cruzamento = 0.99;
     agb.tam_populacao = 200;
@@ -400,13 +407,15 @@ AgBuilder AgBuilder_novo()
     agb.num_pontos_cruz = 4;
     agb.taxa_troca_seg = 0.2;
     agb.max_iter_sem_melhoria = 10;
+    agb.taxa_perturbacao = 0.5;
     agb.oper_mut = VIZINHANCA;
     agb.oper_cruz = MULTIPLOS_PONTOS;
     agb.metodo_selec = TORNEIO;
+    agb.tempo_max = DBL_MAX;
     return agb;
 }
 
-Ag* Ag_create(AgBuilder* agb)
+Ag* Ag_create(Agbuilder* agb)
 {
     Ag* ag = myalloc(sizeof(Ag));
 
@@ -418,6 +427,8 @@ Ag* Ag_create(AgBuilder* agb)
     ag->num_pontos_cruz = agb->num_pontos_cruz;
     ag->taxa_troca_seg = agb->taxa_troca_seg;
     ag->max_iter_sem_melhoria = agb->max_iter_sem_melhoria;
+    ag->taxa_perturbacao = agb->taxa_perturbacao;
+    ag->tempo_max = agb->tempo_max;
     ag->oper_mut = agb->oper_mut;
     ag->oper_cruz = agb->oper_cruz;
     ag->metodo_selec = agb->metodo_selec;

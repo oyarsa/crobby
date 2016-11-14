@@ -32,13 +32,15 @@ typedef struct {
     int num_pontos_cruz;
     double taxa_troca_seg;
     int max_iter_sem_melhoria;
+    double taxa_perturbacao;
     Mutacao oper_mut;
     Cruzamento oper_cruz;
     Selecao metodo_selec;
-} AgBuilder;
+    double tempo_max;
+} Agbuilder;
 
-AgBuilder AgBuilder_novo();
-Ag* Ag_create(AgBuilder* agb);
+Agbuilder Agbuilder_novo();
+Ag* Ag_create(Agbuilder* agb);
 void Ag_free(Ag* ag);
 
 #endif // AG_H
