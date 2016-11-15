@@ -9,7 +9,7 @@ robby = sys.argv[1]
 restantes_file = "restantes.txt"
 finalizados_file = "finalizados.txt"
 result_folder = "resultados"
-out_folder = os.path.join(os.path.dirname(__file__), result_folder)
+out_folder = os.path.join(os.path.curdir, result_folder)
 
 restantes = []
 finalizados = []

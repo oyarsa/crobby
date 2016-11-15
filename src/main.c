@@ -120,12 +120,14 @@ void run_experimento()
     }
 
     Ag* ag = Ag_create(&agb);
-    printf("ID,Exec,FO\n");
+    printf("ID,Exec,FO,Tempo\n");
 
     for (int i = 0; i < NUM_ITER_EXPER; i++) {
+        Cronom* c = Cronom_novo();
         Solucao* s = Ag_resolver(ag);
-        printf("%s,%d,%f\n", id, i, Solucao_fo(s));
+        printf("%s,%d,%f,%f\n", id, i, Solucao_fo(s), Cronom_tempo(c));
         Solucao_free(s);
+        Cronom_free(c);
     }
 
     Ag_free(ag);
@@ -134,16 +136,16 @@ void run_experimento()
 void print_usage()
 {
     // clang-format off
-  char* usage ="\
-  robby [-h|-e]\n\n\
-  Parametros:\n\
-    <nada> lanca o algoritmo com as configuracoes padrao\n\
-    -h     mostra essa mensagem\n\
-    -e     executa um experimento. Sera solicitado na entrada padrao um configuracao\n\
-           no seguinte formato:\n\
-             ID %Mut %Cruz TPop TTor NPCruz MISM %Per OCruz MSelec";
+    char* usage ="\
+    robby [-h|-e]\n\n\
+    Parametros:\n\
+        <nada> lanca o algoritmo com as configuracoes padrao\n\
+        -h     mostra essa mensagem\n\
+        -e     executa um experimento. Sera solicitado na entrada padrao um configuracao\n\
+               no seguinte formato:\n\
+                 ID %Mut %Cruz TPop TTor NPCruz MISM %Per OCruz MSelec";
 
-  puts(usage);
+    puts(usage);
     // clang-format on
 }
 
