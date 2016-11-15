@@ -3,54 +3,61 @@
 #include "constantes.h"
 #include "mem.h"
 
-struct Solucao {
-    int* cromossomo;
-    double fo;
+struct Solucao
+{
+  Movimento* cromossomo;
+  double fo;
 };
 
-double calcula_fo(int* cromossomo, unsigned long* seed)
+double
+calcula_fo(Movimento* cromossomo, unsigned long* seed)
 {
-    double soma = 0.0;
+  double soma = 0.0;
 
-    for (int i = 0; i < NUM_SESSOES; i++) {
-        soma += nova_simulacao(cromossomo, seed);
-    }
+  for (int i = 0; i < NUM_SESSOES; i++) {
+    soma += nova_simulacao(cromossomo, seed);
+  }
 
-    return soma / NUM_SESSOES;
+  return soma / NUM_SESSOES;
 }
 
-Solucao* Solucao_nova(int* cromossomo, unsigned long* seed)
+Solucao*
+Solucao_nova(Movimento* cromossomo, unsigned long* seed)
 {
-    Solucao* s = myalloc(sizeof(Solucao));
-    s->cromossomo = cromossomo;
-    s->fo = calcula_fo(cromossomo, seed);
-    return s;
+  Solucao* s = myalloc(sizeof(Solucao));
+  s->cromossomo = cromossomo;
+  s->fo = calcula_fo(cromossomo, seed);
+  return s;
 }
 
-double Solucao_fo(Solucao* s)
+double
+Solucao_fo(Solucao* s)
 {
-    return s->fo;
+  return s->fo;
 }
 
-int* Solucao_cromossomo(Solucao* s)
+Movimento*
+Solucao_cromossomo(Solucao* s)
 {
-    return s->cromossomo;
+  return s->cromossomo;
 }
 
-void Solucao_free(Solucao* s)
+void
+Solucao_free(Solucao* s)
 {
-    free(s->cromossomo);
-    free(s);
+  free(s->cromossomo);
+  free(s);
 }
 
-int Solucao_cmp_desc(const void* a, const void* b)
+int
+Solucao_cmp_desc(const void* a, const void* b)
 {
-    const Solucao** sa = (const Solucao**)a;
-    const Solucao** sb = (const Solucao**)b;
+  const Solucao** sa = (const Solucao**)a;
+  const Solucao** sb = (const Solucao**)b;
 
-    if ((*sa)->fo > (*sb)->fo)
-        return -1;
-    else if ((*sa)->fo < (*sb)->fo)
-        return 1;
-    return 0;
+  if ((*sa)->fo > (*sb)->fo)
+    return -1;
+  else if ((*sa)->fo < (*sb)->fo)
+    return 1;
+  return 0;
 }

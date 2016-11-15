@@ -2,24 +2,28 @@
 #include "cronom.h"
 #include "mem.h"
 
-struct Cronom {
-    clock_t comeco;
+struct Cronom
+{
+  clock_t comeco;
 };
 
-Cronom* Cronom_novo()
+Cronom*
+Cronom_novo()
 {
-    Cronom* c = myalloc(sizeof(Cronom));
-    c->comeco = clock();
-    return c;
+  Cronom* c = myalloc(sizeof(Cronom));
+  c->comeco = clock();
+  return c;
 }
 
-double Cronom_tempo(Cronom* c)
+double
+Cronom_tempo(Cronom* c)
 {
-    clock_t agora = clock();
-    return (double)(agora - c->comeco) / (double)CLOCKS_PER_SEC;
+  clock_t agora = clock();
+  return (double)(agora - c->comeco) / (double)CLOCKS_PER_SEC;
 }
 
-void Cronom_free(Cronom* c)
+void
+Cronom_free(Cronom* c)
 {
-    free(c);
+  free(c);
 }
