@@ -3,7 +3,7 @@
 
 typedef struct Cronom Cronom;
 
-Cronom* Cronom_novo();
+Cronom* Cronom_novo(void);
 double Cronom_tempo(Cronom* c);
 void Cronom_free(Cronom* c);
 

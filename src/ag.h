@@ -30,7 +30,7 @@ typedef struct
   double tempo_max;          // ?
 } Agbuilder;
 
-Agbuilder Agbuilder_novo();
+Agbuilder Agbuilder_novo(void);
 Ag* Ag_create(Agbuilder* agb);
 void Ag_free(Ag* ag);
 

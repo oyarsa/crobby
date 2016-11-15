@@ -19,7 +19,7 @@ print_crom(Movimento* cromossomo)
 }
 
 void
-teste_avaliacao()
+teste_avaliacao(void)
 {
   char cstr[] = "36035300305362402234304654415166425326465425440613260124462532"
                 "44266414326202152620660644432540341445313414336556640563351630"
@@ -42,7 +42,7 @@ teste_avaliacao()
 }
 
 void
-teste_ag()
+teste_ag(void)
 {
   Agbuilder agb = Agbuilder_novo();
   agb.num_geracoes = 500;
@@ -139,7 +139,7 @@ run_experimento()
 }
 
 void
-print_usage()
+print_usage(void)
 {
   // clang-format off
  char* usage ="\
@@ -165,7 +165,7 @@ main(int argc, char** argv)
     if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
       print_usage();
     else if (strcmp(argv[1], "-e") || strcmp(argv[1], "--experimento"))
-      run_experimento(argv[1]);
+      run_experimento();
     else {
       fputs("Opcao invalida", stderr);
       return 1;

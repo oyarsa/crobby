@@ -437,7 +437,7 @@ avaliar(Movimento** cromossomos, int n, Solucao** solucoes)
 }
 
 Agbuilder
-Agbuilder_novo()
+Agbuilder_novo(void)
 {
   Agbuilder agb;
   agb.taxa_mutacao = 0.005;
