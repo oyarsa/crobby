@@ -62,45 +62,44 @@ void teste_ag()
 
 int read_one_config_from_file(FILE* fp, Agbuilder* agb, char* id)
 {
-    int i_oper_cruz;
-    int i_metodo_selec;
+    char s_oper_cruz[32];
+    char s_metodo_selec[32];
 
-    // ID %Mut %Cruz TPop TTor NPCruz MISM %Per OCruz MSelec
-    int rv = fscanf(fp, "%s %lf %lf %d %d %d %d %lf %d %d", id, &agb->taxa_mutacao,
-        &agb->taxa_cruzamento, &agb->tam_populacao, &agb->tam_torneio,
-        &agb->num_pontos_cruz, &agb->max_iter_sem_melhoria,
-        &agb->taxa_perturbacao, &i_oper_cruz, &i_metodo_selec);
+    // ID %Mut %Cruz TPop MISM %Per OCruz MSelec
+    int rv = fscanf(fp, "%s %lf %lf %d %d %lf %s %s", id, &agb->taxa_mutacao,
+        &agb->taxa_cruzamento, &agb->tam_populacao, &agb->max_iter_sem_melhoria,
+        &agb->taxa_perturbacao, s_oper_cruz, s_metodo_selec);
 
     if (rv == EOF)
         return EOF;
 
-    switch (i_oper_cruz) {
-    case 1:
+    if (strcmp(s_oper_cruz, "UM_PONTO") == 0)
         agb->oper_cruz = UM_PONTO;
-        break;
-    case 2:
-        agb->oper_cruz = MULTIPLOS_PONTOS;
-        break;
-    case 3:
-        agb->oper_cruz = SEGMENTADO;
-        break;
-    case 4:
+    else if (strcmp(s_oper_cruz, "UNIFORME") == 0)
         agb->oper_cruz = UNIFORME;
-        break;
-    default:
+    else if (strcmp(s_oper_cruz, "SEGMENTADO") == 0)
+        agb->oper_cruz = SEGMENTADO;
+    else if (strcmp(s_oper_cruz, "MULTIPLOS_PONTOS_2") == 0) {
+        agb->oper_cruz = MULTIPLOS_PONTOS;
+        agb->num_pontos_cruz = 2;
+    } else if (strcmp(s_oper_cruz, "MULTIPLOS_PONTOS_4") == 0) {
+        agb->oper_cruz = MULTIPLOS_PONTOS;
+        agb->num_pontos_cruz = 4;
+    } else {
         fprintf(stderr, "Operador de cruzamento invalido\n");
         fclose(fp);
         exit(1);
     }
 
-    switch (i_metodo_selec) {
-    case 1:
-        agb->metodo_selec = TORNEIO;
-        break;
-    case 2:
+    if (strcmp(s_metodo_selec, "ROLETA"))
         agb->metodo_selec = ROLETA;
-        break;
-    default:
+    else if (strcmp(s_metodo_selec, "TORNEIO_2")) {
+        agb->metodo_selec = TORNEIO;
+        agb->tam_torneio = 2;
+    } else if (strcmp(s_metodo_selec, "TORNEIO_4")) {
+        agb->metodo_selec = TORNEIO;
+        agb->tam_torneio = 4;
+    } else {
         fprintf(stderr, "Metodo de selecao invalido\n");
         fclose(fp);
         exit(1);
@@ -143,7 +142,7 @@ void print_usage()
         -h     mostra essa mensagem\n\
         -e     executa um experimento. Sera solicitado na entrada padrao um configuracao\n\
                no seguinte formato:\n\
-                 ID %Mut %Cruz TPop TTor NPCruz MISM %Per OCruz MSelec";
+                 ID %Mut %Cruz TPop MISM %Per OCruz MSelec";
 
     puts(usage);
     // clang-format on

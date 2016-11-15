@@ -35,9 +35,8 @@ try:
 except FileNotFoundError:
     pass
 
+os.makedirs(out_folder, exist_ok=True)
 print('Pasta de saida:', out_folder, '\n')
-if not os.path.exists(out_folder):
-    os.makedirs(out_folder)
 
 while restantes:
     c = restantes[-1]
@@ -50,7 +49,7 @@ while restantes:
 
     aid = c.split()[0]
     saida = p.stdout
-    print(aid, saida, sep='\n', end='\n')
+    print(saida, end='\n\n')
 
     out_path = os.path.join(out_folder, aid + '.csv')
     with open(out_path, 'w') as f:
