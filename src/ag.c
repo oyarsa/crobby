@@ -319,11 +319,11 @@ cruz_uniforme(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
   // assinalado pela máscara.
   for (int i = 0; i < TAM_CROM; i++) {
     if (mask[i] == 0) {
-      *filho1[i] = pai1[i];
-      *filho2[i] = pai2[i];
+      (*filho1)[i] = pai1[i];
+      (*filho2)[i] = pai2[i];
     } else {
-      *filho1[i] = pai2[i];
-      *filho2[i] = pai1[i];
+      (*filho1)[i] = pai2[i];
+      (*filho2)[i] = pai1[i];
     }
   }
 
@@ -377,11 +377,11 @@ cruzar_from_pontos(int* pontos_cruz, int npontos, Movimento* pai1,
     // atual
     for (; j < pontos_cruz[i]; j++) {
       if (flip) {
-        *filho1[j] = pai1[j];
-        *filho2[j] = pai2[j];
+        (*filho1)[j] = pai1[j];
+        (*filho2)[j] = pai2[j];
       } else {
-        *filho1[j] = pai2[j];
-        *filho2[j] = pai1[j];
+        (*filho1)[j] = pai2[j];
+        (*filho2)[j] = pai1[j];
       }
     }
     // Ao final do trecho, alterna os pais
@@ -561,6 +561,12 @@ criar_roleta(Ag* ag, Solucao** populacao)
   return roleta;
 }
 
+/**
+ * Normaliza as FOs da população, uma vez que a roleta só lida com valores
+ * positivos. Essa normalização é obtida ao encontrar a menor FO a população, e
+ * então somar o -min+1 a todas as FOs. Isso faz com que a menor FO passe a
+ * valer 1 e as outras sejam ajustadas de acordo.
+ */
 double*
 normalizar_populacao(Ag* ag, Solucao** populacao)
 {
@@ -572,9 +578,15 @@ normalizar_populacao(Ag* ag, Solucao** populacao)
   return aptidoes;
 }
 
+/**
+ * Obtém um índice aleatório a partir da roleta.
+ * Um número aleatório 'x' é gerado, e o primeiro elemento da roleta com FO
+ * acumulada maior que 'x' tem seu índice retornado.
+ */
 int
 obter_indice_roleta(Ag* ag, double* roleta)
 {
+  // Número aleatório entre 0 e a maior FO acumulada
   double x = (myrand(&ag->rng_seed) / (double)MYRAND_MAX) *
              roleta[ag->tam_populacao - 1];
   for (int i = 0; i < ag->tam_populacao; i++) {
@@ -582,9 +594,14 @@ obter_indice_roleta(Ag* ag, double* roleta)
       return i;
     }
   }
+  // Não deve acontecer.
   return -1;
 }
 
+/**
+ * Avalia os cromossomos, obtendo soluções com FOs calculadas. Cada cromossomo
+ * é avaliado em paralelo.
+ */
 void
 avaliar(Movimento** cromossomos, int n, Solucao** solucoes)
 {
