@@ -7,7 +7,7 @@ SRCS := $(wildcard $(SRC_DIRS)/*.c)
 OBJS := $(SRCS:$(SRC_DIRS)/%.c=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
-CFLAGS += -std=c99 -Wall -fopenmp
+CFLAGS += -std=c99 -Wall -Wextra -pedantic -fopenmp
 ##  Debug
 #CFLAGS += -g -O0 -gdwarf-2
 ##  Release

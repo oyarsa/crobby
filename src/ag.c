@@ -44,10 +44,10 @@ void cruz_uniforme(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
                    Movimento** filho2);
 void cruz_um_ponto(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
                    Movimento** filho2);
-void cruzar_from_pontos(Movimento* pontos_cruz, int npontos, Movimento* pai1,
+void cruzar_from_pontos(int* pontos_cruz, int npontos, Movimento* pai1,
                         Movimento* pai2, Movimento** filho1,
                         Movimento** filho2);
-Movimento* gerar_mascara(Ag* ag);
+int* gerar_mascara(Ag* ag);
 void vizinhanca(Ag* ag, Movimento** cromossomos);
 void avaliar(Movimento** cromossomos, int n, Solucao** solucoes);
 Movimento* gerar_solucao_aleatoria(Ag* ag);                         //
@@ -178,23 +178,26 @@ void
 cruz_multiplos_pontos(Ag* ag, Movimento* pai1, Movimento* pai2,
                       Movimento** filho1, Movimento** filho2)
 {
-  Movimento* pontos_cruz =
-    myalloc((ag->num_pontos_cruz + 1) * sizeof(Movimento));
+  int* pontos_cruz = myalloc((ag->num_pontos_cruz + 1) * sizeof(int));
   for (int i = 0; i < ag->num_pontos_cruz; i++) {
     pontos_cruz[i] = myrand(&ag->rng_seed) % TAM_CROM;
   }
+
   pontos_cruz[ag->num_pontos_cruz] = TAM_CROM;
-  qsort(pontos_cruz, ag->num_pontos_cruz + 1, sizeof(Movimento), compar_int);
+  qsort(pontos_cruz, ag->num_pontos_cruz + 1, sizeof(int), compar_int);
+
   cruzar_from_pontos(pontos_cruz, ag->num_pontos_cruz + 1, pai1, pai2, filho1,
                      filho2);
+  free(pontos_cruz);
 }
 
 void
 cruz_segmentado(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
                 Movimento** filho2)
 {
-  Movimento* pontos_cruz = myalloc(TAM_CROM * sizeof(Movimento));
+  int pontos_cruz[TAM_CROM];
   int n = 0;
+
   for (int i = 0; i < TAM_CROM; i++) {
     double x = myrand(&ag->rng_seed) / (double)MYRAND_MAX;
     if (x <= ag->taxa_troca_seg) {
@@ -208,10 +211,10 @@ cruz_segmentado(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
   cruzar_from_pontos(pontos_cruz, n, pai1, pai2, filho1, filho2);
 }
 
-Movimento*
+int*
 gerar_mascara(Ag* ag)
 {
-  Movimento* mask = myalloc(TAM_CROM * sizeof(Movimento));
+  int* mask = myalloc(TAM_CROM * sizeof(int));
   for (int i = 0; i < TAM_CROM; i++) {
     double x = myrand(&ag->rng_seed) / (double)MYRAND_MAX;
     mask[i] = x <= 0.5 ? 1 : 0;
@@ -223,7 +226,7 @@ void
 cruz_uniforme(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
               Movimento** filho2)
 {
-  Movimento* mask = gerar_mascara(ag);
+  int* mask = gerar_mascara(ag);
   *filho1 = myalloc(TAM_CROM * sizeof(Movimento));
   *filho2 = myalloc(TAM_CROM * sizeof(Movimento));
 
@@ -236,6 +239,7 @@ cruz_uniforme(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
       *filho2[i] = pai1[i];
     }
   }
+
   free(mask);
 }
 
@@ -255,7 +259,7 @@ cruz_um_ponto(Ag* ag, Movimento* pai1, Movimento* pai2, Movimento** filho1,
 }
 
 void
-cruzar_from_pontos(Movimento* pontos_cruz, int npontos, Movimento* pai1,
+cruzar_from_pontos(int* pontos_cruz, int npontos, Movimento* pai1,
                    Movimento* pai2, Movimento** filho1, Movimento** filho2)
 {
   *filho1 = myalloc(TAM_CROM * sizeof(Movimento));
@@ -276,8 +280,6 @@ cruzar_from_pontos(Movimento* pontos_cruz, int npontos, Movimento* pai1,
     }
     flip = !flip;
   }
-
-  free(pontos_cruz);
 }
 
 void

@@ -70,10 +70,10 @@ read_one_config_from_file(FILE* fp, Agbuilder* agb, char* id)
   char s_metodo_selec[32];
 
   // ID %Mut %Cruz TPop MISM %Per OCruz MSelec
-  int rv = fscanf(fp, "%s %lf %lf %d %d %lf %s %s", id, &agb->taxa_mutacao,
-                  &agb->taxa_cruzamento, &agb->tam_populacao,
-                  &agb->max_iter_sem_melhoria, &agb->taxa_perturbacao,
-                  s_oper_cruz, s_metodo_selec);
+  int rv = fscanf(fp, "%127s %lf %lf %d %d %lf %31s %31s", id,
+                  &agb->taxa_mutacao, &agb->taxa_cruzamento,
+                  &agb->tam_populacao, &agb->max_iter_sem_melhoria,
+                  &agb->taxa_perturbacao, s_oper_cruz, s_metodo_selec);
 
   if (rv == EOF)
     return EOF;
