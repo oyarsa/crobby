@@ -186,7 +186,7 @@ proximo_estado(Estado* e, int movimento, unsigned long* seed)
       pega_lata(e);
       break;
     case FICAR_PARADO:
-      /* Faz nada */
+      // Faz nada
       break;
     case MOVE_ALEATORIO:
       move_aleatorio(e, seed);
@@ -201,8 +201,11 @@ nova_simulacao(Movimento* cromossomo, unsigned long* seed)
   init_estado(&e, seed);
 
   for (int i = 0; i < NUM_ACOES; i++) {
+    // Obtém o cenário a partir do estado atual
     int cenario = get_cenario(&e);
+    // Encontra o movimento correspondente ao cenário conforme dita o cromossomo
     int movimento = cromossomo[cenario];
+    // Executa o Movimento e encontra o próximo estado
     proximo_estado(&e, movimento, seed);
   }
 
