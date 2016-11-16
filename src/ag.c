@@ -50,15 +50,15 @@ void cruzar_from_pontos(int* pontos_cruz, int npontos, Movimento* pai1,
 int* gerar_mascara(Ag* ag);
 void vizinhanca(Ag* ag, Movimento** cromossomos);
 void avaliar(Movimento** cromossomos, int n, Solucao** solucoes);
-Movimento* gerar_solucao_aleatoria(Ag* ag);                         //
-void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole); //
-void perturbar_populacao(Ag* ag, Solucao** populacao);              //
-void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais);  //
-void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais); //
-Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao);      //
-double* criar_roleta(Ag* ag, Solucao** populacao);                  //
-double* normalizar_populacao(Ag* ag, Solucao** populacao);          //
-int obter_indice_roleta(Ag* ag, double* roleta);                    //
+Movimento* gerar_solucao_aleatoria(Ag* ag);
+void proxima_geracao(Ag* ag, Solucao** populacao, Solucao** prole);
+void perturbar_populacao(Ag* ag, Solucao** populacao);
+void selecao_roleta(Ag* ag, Solucao** populacao, Solucao*** pais);
+void selecao_torneio(Ag* ag, Solucao** populacao, Solucao*** pais);
+Solucao* obter_individuo_torneio(Ag* ag, Solucao** populacao);
+double* criar_roleta(Ag* ag, Solucao** populacao);
+double* normalizar_populacao(Ag* ag, Solucao** populacao);
+int obter_indice_roleta(Ag* ag, double* roleta);
 
 Solucao*
 Ag_resolver(Ag* ag)
@@ -78,7 +78,9 @@ Ag_resolver(Ag* ag)
 
   for (int i = 0; i < ag->num_geracoes && Cronom_tempo(c) < ag->tempo_max;
        i++) {
-    // printf("%d: %g\n", i + 1, Solucao_fo(populacao[0]));
+#ifdef MOSTRAR_ITERACOES
+    printf("%d: %g\n", i + 1, Solucao_fo(populacao[0]));
+#endif
 
     selecionar(ag, populacao, pais);
     cruzamento(ag, pais, filhos);
