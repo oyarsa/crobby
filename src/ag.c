@@ -456,7 +456,7 @@ Agbuilder_novo(void)
   agb.oper_mut = VIZINHANCA;
   agb.oper_cruz = MULTIPLOS_PONTOS;
   agb.metodo_selec = TORNEIO;
-  agb.tempo_max = DBL_MAX;
+  agb.tempo_max = DBL_MAX; // Tempo "infinito"
   return agb;
 }
 
@@ -465,10 +465,14 @@ Ag_create(Agbuilder* agb)
 {
   Ag* ag = myalloc(sizeof(Ag));
 
+  // O número de cruzamentos é metade da multiplicação da porcentagem com o
+  // tamanho da população porque ele diz respeito ao número de par de pais
+  // a serem selecionados, e cada par gerará dois filhos.
+  ag->num_cruzamentos = (int)agb->tam_populacao * agb->taxa_cruzamento / 2;
+
   ag->taxa_mutacao = agb->taxa_mutacao;
   ag->tam_populacao = agb->tam_populacao;
   ag->num_geracoes = agb->num_geracoes;
-  ag->num_cruzamentos = (int)agb->tam_populacao * agb->taxa_cruzamento / 2;
   ag->tam_torneio = agb->tam_torneio;
   ag->num_pontos_cruz = agb->num_pontos_cruz;
   ag->taxa_troca_seg = agb->taxa_troca_seg;

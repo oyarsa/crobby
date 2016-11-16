@@ -3,16 +3,37 @@
 
 #include "solucao.h"
 
+/**
+ * Operadores de mutação implementados.
+ */
 typedef enum { VIZINHANCA } Mutacao;
 
+/**
+ * Operadores de cruzamento implementados.
+ */
 typedef enum { UM_PONTO, MULTIPLOS_PONTOS, UNIFORME, SEGMENTADO } Cruzamento;
 
+/**
+ * Métodos de seleção implementados.
+ */
 typedef enum { ROLETA, TORNEIO } Selecao;
 
+/**
+ * Define uma struct opaca que representa a configuração de um AG.
+ */
 typedef struct Ag Ag;
 
+/**
+ * Executa o AG como configurado em 'ag', retornando a melhor solução
+ * encontrada. Este objeto será alocado dinamicamente e deverá ser liberado com
+ * Ag_free.
+ */
 Solucao* Ag_resolver(Ag* ag);
 
+/**
+ * Define uma struct transparente, que será utilizada para configurar os
+ * parâmetros arbitrários do AG.
+ */
 typedef struct
 {
   double taxa_mutacao;       // 0.005, 0.010
@@ -30,8 +51,21 @@ typedef struct
   double tempo_max;          // ?
 } Agbuilder;
 
+/**
+ * Retorna um Agbuilder configurado com os valores padrão. Este objeto deverá
+ * ser modificado de acordo com as configurações desejadas.
+ */
 Agbuilder Agbuilder_novo(void);
+
+/**
+ * Retorna um Ag configurado com os parâmetros do Agbuilder. Esse objeto será
+ * alocado dinamicamente.
+ */
 Ag* Ag_create(Agbuilder* agb);
+
+/**
+ * Libera a memória do objeto Ag.
+ */
 void Ag_free(Ag* ag);
 
 #endif // AG_H

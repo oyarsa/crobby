@@ -9,6 +9,10 @@ struct Solucao
   double fo;
 };
 
+/**
+ * Calcula a FO de um cromossomo. Executa NUM_SESSOES simulações, cada uma a
+ * partir de um tabuleiro aleatório. Retorna a média de pontuações das sessões
+ */
 double
 calcula_fo(Movimento* cromossomo, unsigned long* seed)
 {

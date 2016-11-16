@@ -5,6 +5,11 @@
 
 #define MYRAND_MAX ULONG_MAX
 
+/**
+ * Obtém um número pseudoaleatório a partir da semente 'y'. Esta é uma função
+ * pura, não dependendo de nenhum estado global, ao contrário de rand. Sendo
+ * assim, é perfeitamente thread-safe.
+ */
 static inline unsigned long
 myrand(unsigned long* y)
 {
