@@ -1,4 +1,3 @@
-#define _XOPEN_SOURCE
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
