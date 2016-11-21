@@ -94,11 +94,11 @@ read_one_config_from_file(FILE* fp, Agbuilder* agb, char* id)
   char s_oper_cruz[32];
   char s_metodo_selec[32];
 
-  // Formato da entrada: ID %Mut %Cruz TPop MaxItSMel %Per OCruz MSelec
-  int rv = fscanf(fp, "%127s %lf %lf %d %d %lf %31s %31s", id,
-                  &agb->taxa_mutacao, &agb->taxa_cruzamento,
-                  &agb->tam_populacao, &agb->max_iter_sem_melhoria,
-                  &agb->taxa_perturbacao, s_oper_cruz, s_metodo_selec);
+  // Formato da entrada: ID %Mut %Cruz TPop MaxItSMel %Per OCruz MSelec NGer
+  int rv = fscanf(
+    fp, "%127s %lf %lf %d %d %lf %31s %31s, %d", id, &agb->taxa_mutacao,
+    &agb->taxa_cruzamento, &agb->tam_populacao, &agb->max_iter_sem_melhoria,
+    &agb->taxa_perturbacao, s_oper_cruz, s_metodo_selec, &agb->num_geracoes);
 
   // Interrompe se nada foi lido.
   if (rv == EOF)
@@ -198,7 +198,7 @@ print_usage(void)
         -h     mostra essa mensagem\n\
         -e     executa um experimento. Sera solicitado na entrada padrao um configuracao\n\
                no seguinte formato:\n\
-                 ID %Mut %Cruz TPop MISM %Per OCruz MSelec";
+                 ID %Mut %Cruz TPop MISM %Per OCruz MSelec NGer";
 
   puts(usage);
   // clang-format on
