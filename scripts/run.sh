@@ -6,5 +6,5 @@ rm restantes.txt
 rm -rf resultados/
 make
 python3 scripts/gerar_configuracoes.py "$1"
-python3 scripts/executa_experimentos.py build/robby
+nohup 2>&1 python3 -u scripts/executa_experimentos.py build/robby &
 echo $! > pid
