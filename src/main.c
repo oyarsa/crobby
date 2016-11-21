@@ -220,7 +220,8 @@ main(int argc, char** argv)
     if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0)
       print_usage();
     // Se for um experimento, ele é iniciado.
-    else if (strcmp(argv[1], "-e") || strcmp(argv[1], "--experimento"))
+    else if (strcmp(argv[1], "-e") == 0 ||
+             strcmp(argv[1], "--experimento") == 0)
       run_experimento();
     // Também pode ser uma opção inválida. Nesse caso, o programa é encerrado.
     else {

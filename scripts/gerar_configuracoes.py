@@ -39,6 +39,7 @@ fim_intervalo = (id_grupo + 1) * combinacoes_por_grupo
 print('Intervalo: [%d, %d)' % (comeco_intervalo, fim_intervalo))
 
 with open('restantes.txt', 'w') as f:
-    for i, c in enumerate(combinacoes[comeco_intervalo:fim_intervalo]):
+    for i, c in enumerate(combinacoes[comeco_intervalo:fim_intervalo],
+                          comeco_intervalo):
         print(comb2str(i, c), file=f)
 
