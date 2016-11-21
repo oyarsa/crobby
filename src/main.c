@@ -130,12 +130,12 @@ read_one_config_from_file(FILE* fp, Agbuilder* agb, char* id)
   // Configura o método de seleção a partir da string obtida. O método TORNEIO
   // possui configurações com 2 e 4 indivíduos. Se o método for inválido, avisa
   // o usuário e interrompe o programa.
-  if (strcmp(s_metodo_selec, "ROLETA"))
+  if (strcmp(s_metodo_selec, "ROLETA") == 0)
     agb->metodo_selec = ROLETA;
-  else if (strcmp(s_metodo_selec, "TORNEIO_2")) {
+  else if (strcmp(s_metodo_selec, "TORNEIO_2") == 0) {
     agb->metodo_selec = TORNEIO;
     agb->tam_torneio = 2;
-  } else if (strcmp(s_metodo_selec, "TORNEIO_4")) {
+  } else if (strcmp(s_metodo_selec, "TORNEIO_4") == 0) {
     agb->metodo_selec = TORNEIO;
     agb->tam_torneio = 4;
   } else {
