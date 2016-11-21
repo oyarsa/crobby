@@ -11,7 +11,7 @@
  * Número de vezes que o AG será executado para uma configuração durante o
  * experimento.
  */
-#define NUM_ITER_EXPER 3
+#define NUM_ITER_EXPER 10
 
 /**
  * Imprime um cromossomo como uma sequência de números seguida por uma quebra de
