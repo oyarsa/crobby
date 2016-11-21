@@ -3,7 +3,7 @@
 import atexit
 import os
 import sys
-from subprocess import PIPE, run
+from subprocess import PIPE, run, STDOUT
 
 robby = sys.argv[1]
 restantes_file = "restantes.txt"
@@ -42,14 +42,15 @@ while restantes:
     c = restantes[-1]
     print('Config:', c)
 
-    p = run([robby, '-e'], input=c, stdout=PIPE, universal_newlines=True)
+    p = run([robby, '-e'], input=c, stdout=PIPE, stderr=STDOUT,
+            universal_newlines=True)
 
     restantes.pop()
     finalizados.append(c)
 
     aid = c.split()[0]
     saida = p.stdout
-    print(saida, end='\n\n')
+    print(aid, '\n', saida, end='\n\n')
 
     out_path = os.path.join(out_folder, aid + '.csv')
     with open(out_path, 'w') as f:
