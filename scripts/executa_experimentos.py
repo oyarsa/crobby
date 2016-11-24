@@ -3,7 +3,7 @@
 import atexit
 import os
 import sys
-from subprocess import PIPE, run, STDOUT
+from subprocess import PIPE, run, STDOUT, CalledProcessError
 
 robby = sys.argv[1]
 restantes_file = "restantes.txt"
@@ -44,6 +44,12 @@ while restantes:
 
     p = run([robby, '-e'], input=c, stdout=PIPE, stderr=STDOUT,
             universal_newlines=True)
+
+    try:
+        p.check_returncode()
+    except CalledProcessError as e:
+        print('Erro ao executar o processo, código: {}, mensagem: {}'
+              .format(e.returncode, e.stderr))
 
     restantes.pop()
     finalizados.append(c)

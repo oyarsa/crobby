@@ -69,7 +69,10 @@ Ag_resolver(Ag* ag)
   // Inicializa o cronômetro, gera a população inicial e determina a melhor_fo
   // como sendo o melhor indivíduo desta.
   Cronom* c = Cronom_novo();
+
   Solucao** populacao = gerar_individuos_aleatorios(ag, ag->tam_populacao);
+  qsort(populacao, ag->tam_populacao, sizeof(Solucao*), Solucao_cmp_desc);
+
   int iter_sem_melhoria = 0;
   double melhor_fo = Solucao_fo(populacao[0]);
 
@@ -594,6 +597,8 @@ obter_indice_roleta(Ag* ag, double* roleta)
     }
   }
   // Não deve acontecer.
+  fprintf(stderr, "Isso não era pra acontecer\n");
+  exit(123);
   return -1;
 }
 
