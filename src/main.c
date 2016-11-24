@@ -62,6 +62,7 @@ teste_avaliacao(void)
 void
 teste_ag(void)
 {
+  puts("Iniciando resolucao do AG com configuracoes padrao");
   Agbuilder agb = Agbuilder_novo();
   agb.num_geracoes = 500;
   agb.taxa_cruzamento = 0.99;
