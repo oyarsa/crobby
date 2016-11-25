@@ -13,5 +13,5 @@ ec2-35-162-246-239.us-west-2.compute.amazonaws.com
 user="ubuntu"
 
 for ip in $ips; do
-  scp -i "$1" -r "$user"@"$ip":/home/"$user"/crobby/resultados resultados
+  scp -i "$1" -r "$user"@"$ip":/home/"$user"/crobby/resultados .
 done
