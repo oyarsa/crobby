@@ -25,8 +25,10 @@ result <- ddply(frames, ~ID, summarise,
                 Media.Tempo=mean(Tempo), Mediana.Tempo=median(Tempo), Min.Tempo=min(Tempo), Max.Tempo=max(Tempo),
                 Media.RPD.FO=(function(x) { rpd.reduce(mean, x, max(frames$FO)) })(FO),
                 Mediana.RPD.FO=(function(x) { rpd.reduce(median, x, max(frames$FO)) })(FO),
-                RPD.Tempo=(function(x) { rpd.reduce(mean, x, min(frames$Tempo)) })(Tempo)
+                RPD.Tempo=(function(x) { rpd.reduce(mean, x, min(frames$Tempo)) })(Tempo),
+                DesvioPadrao.FO=sd(FO)
                 )
 
-result <- result[order(result$Mediana.RPD.FO, result$Mediana.RPD.Tempo),]
-head(result, 5)
+result <- result[with(result, order(-result$Mediana.FO)), ]
+res10 <- head(result, 10)
+dp <- res10[with(res10, order(res10$DesvioPadrao.FO)), ]
