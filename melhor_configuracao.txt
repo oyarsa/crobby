@@ -1,2 +1,2 @@
-# Essa foi a melhor configuração obtida através dos experimentos
+# Essa foi a melhor configuraÃ§Ã£o obtida atravÃ©s dos experimentos
 1723-0.01.0.99.200.20.0.5.MULTIPLOS_PONTOS_2.TORNEIO_4.750 0.01 0.99 200 20 0.5 MULTIPLOS_PONTOS_2 TORNEIO_4 750

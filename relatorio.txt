@@ -1,0 +1,58 @@
+﻿Grupo: Italo Luis da Silva
+       Amanda Lemos Prado
+       Guilherme Cordeiro
+
+Implementação do algoritmo:
+  Representação do cromossomo: lista de ações a serem tomadas em um determinado
+      cenário. A posição é obtida a partir da conversão do número composto pela
+      concatenação dos números do objetos adjacentes ao robô (0 para célula vazia, 1
+      para célula com lata, 2 para célula com parede) de um número em base 3 para um
+      número em base 10. Tem-se que a lista tem 243 posições e cobre todos os cenários
+      possíveis, inclusive os inválidos.
+
+  Solução inicial: obtida aleatoriamente, onde cada posição do vetor é um número
+      aleatório entre 0 e 2 (inclusivos).
+
+  Seleção: foi implementada a seleção por roleta (com normalização para lidar com
+      as FOs negativas) e um torneio n-ário.
+
+  Cruzamento: foram implementados os operadores de um ponto, múltiplos pontos,
+      segmentado e uniforme.
+
+  Mutação: consiste em percorrer a lista de ações, escolhendo aleatoriamente posições
+      a serem modificadas. Se uma posição foi escolhida, seu novo valor será obtido
+      aleatoriamente
+
+  Próxima geração: elitismo. Os melhores indivíduos são preservados e os filhos
+      são inseridos na população.
+
+  Perturbação: após um número de iterações sem melhoria é aplicada uma perturbação
+      na população. Um porcentagem dela é removida e substituída por novos indivíduos,
+      gerados aleatoriamente.
+
+Configuração do algoritmo:
+  Foram geradas todas as combinações entre os parâmetros do algoritmo. Essas configurações
+  foram executadas 10 vezes cada uma. Foram então comparadas através da mediana da FO e do
+  desvio padrão da FO. O desvio padrão foi necessário, uma vez que a função objetivo desse problema
+  é muito volátil, levando a boas configurações ficarem presos em valores pequenos (o que também
+  ocorre na implementação original da autora).
+  Infelizmente, devido à pressão do tempo, não foi possível
+  executar todas a combinações, apenas 1/6 delas. Dentre as que foram executadas, a configuração
+  1723-0.01.0.99.200.20.0.5.MULTIPLOS_PONTOS_2.TORNEIO_4.750 foi a melhor. Essa configuração
+  utiliza tava de mutação de 1%, taxa de cruzamento de 99%, população de 200 indivíduos,
+  um máximo de 20 iterações sem melhoria antes da perturbação, uma perturbação de 50% da
+  população, o operador de cruzamento de Múltiplos Pontos com 2 pontos de cruzamento, seleção
+  por Torneio com 4 indivíduos e 750 iterações.
+  Os resultados obtidos estão disponíveis na pasta "resultados".
+
+Ambiente:
+  Máquina: instância t2.micro da AWS. O hardware específico não foi informado, mas
+      é utilizado um processador Intel Xeon de alta frequência, limitado a um core.
+  Linguagem de programação: C99 (gcc 6.2.0)
+  Sistema operacional: Ubuntu 16.04
+
+Referências:
+  Os operadores foram retirados, em sua maioria, do artigo disponibilizado no material
+  didático. O operador de perturbação foi de ideia própria, influenciado por diversas fontes,
+  mas nenhuma em específico.
+
